@@ -1,0 +1,1 @@
+Copy and edit dbConnection.properties FROM src/templates TO src/main/resources
