@@ -42,9 +42,8 @@
                 </tr>
             </c:forEach>
         </table>
-            <!--input type="text" hidden name="action" value="restore"-->
         </form>
-        <form style="float:left" class="form-inline" role="form" action="/", method="post">
+        <form style="float:left" class="form-inline" role="form" action="/" , method="post">
             <button type="submit" class="btn btn-default">Back to adv list</button>
         </form>
         <button style="float:left" class="btn btn-default" form="check" type="submit" name="action" value="restore">Restore selected</button>

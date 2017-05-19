@@ -42,7 +42,6 @@
                 </tr>
             </c:forEach>
         </table>
-            <!--input type="text" hidden name="action" value="remove"-->
         </form>
         <form style="float:left" class="form-inline" role="form" action="/add_page" method="post">
             <button type="submit" class="btn btn-default">Add new adv</button>

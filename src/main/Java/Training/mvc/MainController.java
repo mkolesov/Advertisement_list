@@ -24,12 +24,13 @@ import java.util.List;
  * Created by Администратор on 25.04.2017.
  */
 @Controller
-@RequestMapping("/")
 public class MainController implements App_constants {
 
     private String indexPage = "index";
+
     @Autowired
     private AdvDAO advDao;
+
     @RequestMapping("/")
     public String index(Model model) {
         model.addAttribute("advs",advDao.list(NOT_IN_BASKET));
