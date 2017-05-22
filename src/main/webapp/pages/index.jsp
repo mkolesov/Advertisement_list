@@ -9,7 +9,16 @@
     </head>
 
     <body>
-        <label>Advertisement list</label>
+        <h1 style="background-color: #3F3F3F; color: white; padding: 10px; margin: 0px;" align="center">Advertisement list</h1>
+        <div id="login" align="right" <c:if test="${inBasketCount < 1}">style="background-color: #ADFF2F"</c:if>
+        <c:if test="${inBasketCount > 0}">style="background-color: #DC143C"</c:if>>
+            <table>
+            <tr>
+                <td><label>You are logged as Guest</label></td>
+            </tr>
+            </table>
+        </div>
+
         <form class="form-inline" role="form" action="/search" method="post">
             <input type="text" class="form-control" name="pattern" placeholder="Short desc">
             <input type="text" hidden name="location" value="">
@@ -42,19 +51,41 @@
                 </tr>
             </c:forEach>
         </table>
+        <table>
+            <tr valign="top">
+                <td>
+                    <form role="form" action="/add_page" method="post">
+                        <button type="submit" class="btn btn-default">Add new adv</button>
+                    </form>
+                </td>
+                <td>
+                    <button class="btn btn-default" form="check" type="submit" name="action" value="remove">Remove to basket</button>
+                </td>
+                <td>
+                    <form role="form" action="/basket">
+                        <button type="submit" class="btn btn-default">Basket (<b>${inBasketCount}</b> advs)</button>
+                    </form>
+                </td>
+            </tr>
+        </table>
+            <table>
+            <tr valign="top">
+                <td>
+                    <form enctype="multipart/form-data" role="form" action="/import" method="post">
+                        <button type="submit" class="btn btn-default">Import <input type="file" name="import"></button>
+                    </form>
+                </td>
+                <td>
+                    <button style="width: 75px; height: 56px" class="btn btn-default" form="check" type="submit"
+                    name="action" value="export">Export</button>
+                </td>
+            </tr>
+        </table>
         </form>
-        <form style="float:left" class="form-inline" role="form" action="/add_page" method="post">
-            <button type="submit" class="btn btn-default">Add new adv</button>
-        </form>
-        <button style="float:left" class="btn btn-default" form="check" type="submit" name="action" value="remove">Remove to basket</button>
-        <form class="form-inline" role="form" action="/basket">
-            <button type="submit" class="btn btn-default">Basket (<b>${inBasketCount}</b> advs)</button>
-        </form>
+
+
+
         <!--xml import/export-->
-         <form style="float:left" enctype="multipart/form-data" role="form" action="/import" method="post">
-             <button type="submit" class="btn btn-default">Import <input type="file" name="import"></button>
-         </form>
-         <button class="btn btn-default" form="check" type="submit"
-                 name="action" value="export">Export</button>
+
     </body>
 </html>
