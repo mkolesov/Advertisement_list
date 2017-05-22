@@ -9,7 +9,8 @@
     </head>
 
     <body>
-        <label>Basket</label>
+    <h1 style="background-color: #3F3F3F; font-family: 'Comic Sans MS'; color: white; padding: 10px; margin: 0px;" align="center">Advertisement list</h1>
+    <h1 style="background-color: #00FFFF; font-family: 'Comic Sans MS'; color: black; padding: 10px; margin: 0px;" align="center">Basket</h1>
         <form class="form-inline" role="form" action="/search" method="post">
             <input type="text" class="form-control" name="pattern" placeholder="Short desc">
             <input type="text" hidden name="location" value="basket">

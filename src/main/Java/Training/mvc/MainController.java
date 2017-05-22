@@ -102,24 +102,26 @@ public class MainController implements App_constants {
     }
 
     @RequestMapping(value = "/doAction", method = RequestMethod.POST)
-    public String moveToBasket(@RequestParam(value = "id") long[] ids, @RequestParam(value = "action") String action, HttpServletResponse response){
-        try {
-            if (action.equals("export")){
-                XmlUtils.exportToXml(ids, advDao, "e:\\export.xml");
-            }
-            for (long id: ids){
-                if (action.equals("remove")){
-                    advDao.changeBasketStatus(IN_BASKET, id);
-                } else if (action.equals("restore")){
-                    advDao.changeBasketStatus(NOT_IN_BASKET, id);
+    public String moveToBasket(@RequestParam(value = "id", required = false) long[] ids, @RequestParam(value = "action") String action, HttpServletResponse response){
+        if(ids != null) {
+            try {
+                if (action.equals("export")) {
+                    XmlUtils.exportToXml(ids, advDao, "e:\\export.xml");
                 }
+                for (long id : ids) {
+                    if (action.equals("remove")) {
+                        advDao.changeBasketStatus(IN_BASKET, id);
+                    } else if (action.equals("restore")) {
+                        advDao.changeBasketStatus(NOT_IN_BASKET, id);
+                    }
+                }
+            } catch (Exception e) {
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            e.printStackTrace();
-        }
-        if (action.equals("restore")){
-            return "redirect:/basket";
+            if (action.equals("restore")) {
+                return "redirect:/basket";
+            }
         }
         return "redirect:/";
     }
