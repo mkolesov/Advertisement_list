@@ -1,4 +1,4 @@
-package Training.mvc;
+package Training.Spring.config;
 
 import Training.Dao.AdvDAO;
 import Training.Dao.Impl.AdvDaoImpl;
@@ -15,6 +15,8 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.view.JstlView;
 import org.springframework.web.servlet.view.UrlBasedViewResolver;
 
@@ -30,7 +32,7 @@ import java.util.Properties;
 @ComponentScan("Training")
 @EnableWebMvc
 @EnableTransactionManagement
-public class AppConfig {
+public class AppConfig extends WebMvcConfigurerAdapter{
 
     @Bean
     public DataSource dataSource() {
@@ -104,5 +106,14 @@ public class AppConfig {
         resolver.setOrder(1);
         return resolver;
     }
+
+    @Override
+    public void addResourceHandlers( final ResourceHandlerRegistry registry ) {
+        registry.addResourceHandler("/favicon.ico").addResourceLocations("/resources/images/");
+        registry.addResourceHandler("/images/**").addResourceLocations("/resources/images/");
+        registry.addResourceHandler("/administration/images/**").addResourceLocations("/resources/images/");
+        registry.addResourceHandler("/auth/images/**").addResourceLocations("/resources/images/");
+    }
+
 
 }

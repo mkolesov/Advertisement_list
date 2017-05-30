@@ -1,4 +1,4 @@
-package Training.mvc;
+package Training.Spring.mvc;
 
 import Training.App_constants;
 import Training.Dao.AdvDAO;
@@ -27,18 +27,24 @@ import java.util.List;
 public class MainController implements App_constants {
 
     private String indexPage = "index";
+    private final String indexMaping = "index";
 
     @Autowired
     private AdvDAO advDao;
 
     @RequestMapping("/")
+    public String root(){
+        return "redirect:/index";
+    }
+
+    @RequestMapping(indexMaping)
     public String index(Model model) {
         model.addAttribute("advs",advDao.list(NOT_IN_BASKET));
         model.addAttribute("inBasketCount", advDao.list(IN_BASKET).size());
         return indexPage;
     }
 
-    @RequestMapping(value = "/add_page" ,method = RequestMethod.POST)
+    @RequestMapping(value = "/auth/add_page" ,method = RequestMethod.POST)
     public String addPage(){
         return "add_page";
     }
@@ -51,22 +57,22 @@ public class MainController implements App_constants {
         return new ModelAndView(indexPage, "advs", advDao.list(NOT_IN_BASKET, pattern));
     }
 
-    @RequestMapping("/clean_basket")
+    @RequestMapping("/administration/clean_basket")
     public String cleanBasket(){
         List<Advertisement> list = advDao.list(IN_BASKET);
         for (Advertisement adv : list){
             advDao.delete(adv.getId());
         }
-        return "redirect:/basket";
+        return "redirect:/administration/basket";
     }
 
-    @RequestMapping("/restore_all")
+    @RequestMapping("/administration/restore_all")
     public String restoreAll(){
         List<Advertisement> list = advDao.list(IN_BASKET);
         for (Advertisement adv : list){
             advDao.changeBasketStatus(NOT_IN_BASKET, adv.getId());
         }
-        return "redirect:/basket";
+        return "redirect:/administration/basket";
     }
 
     @RequestMapping("/image/{file_id}")
@@ -81,7 +87,7 @@ public class MainController implements App_constants {
         }
     }
 
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    @RequestMapping(value = "/auth/add", method = RequestMethod.POST)
     public String addAdv(@RequestParam(value = "name") String name,
                                @RequestParam(value = "shortDesc") String shortDesc,
                                @RequestParam(value = "longDesc", required = false) String longDesc,
@@ -93,21 +99,18 @@ public class MainController implements App_constants {
             Advertisement advertisement = new Advertisement(name, shortDesc, longDesc, phone, price,
                     photo.isEmpty()?null: new Photo(photo.getOriginalFilename(), photo.getBytes()));
             advDao.add(advertisement);
-            return "redirect:/";
+            return "redirect:/"+indexMaping;
         } catch (IOException e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             e.printStackTrace();
-            return "redirect:/";
+            return "redirect:/"+indexMaping;
         }
     }
 
-    @RequestMapping(value = "/doAction", method = RequestMethod.POST)
+    @RequestMapping(value = "/administration/doAction", method = RequestMethod.POST)
     public String moveToBasket(@RequestParam(value = "id", required = false) long[] ids, @RequestParam(value = "action") String action, HttpServletResponse response){
         if(ids != null) {
             try {
-                if (action.equals("export")) {
-                    XmlUtils.exportToXml(ids, advDao, "e:\\export.xml");
-                }
                 for (long id : ids) {
                     if (action.equals("remove")) {
                         advDao.changeBasketStatus(IN_BASKET, id);
@@ -120,19 +123,19 @@ public class MainController implements App_constants {
                 e.printStackTrace();
             }
             if (action.equals("restore")) {
-                return "redirect:/basket";
+                return "redirect:/administration/basket";
             }
         }
-        return "redirect:/";
+        return "redirect:/"+indexMaping;
     }
 
-    @RequestMapping(value = "/basket")
+    @RequestMapping(value = "/administration/basket")
     public String toBasket(Model model) {
         model.addAttribute("advs",advDao.list(IN_BASKET));
         return "basket";
     }
 
-    @RequestMapping(value = "/import", method = RequestMethod.POST)
+    @RequestMapping(value = "/auth/import", method = RequestMethod.POST)
     public String importAdvs(@RequestParam(value = "import") MultipartFile importFile, HttpServletResponse response){
         try {
             InputStream file = importFile.getInputStream();
@@ -143,6 +146,19 @@ public class MainController implements App_constants {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             e.printStackTrace();
         }
-        return "redirect:/";
+        return "redirect:/"+indexMaping;
+    }
+
+    @RequestMapping(value = "/auth/export", method = RequestMethod.POST)
+    public String export(@RequestParam(value = "id", required = false) long[] ids, HttpServletResponse response){
+        if(ids != null) {
+            try {
+                    XmlUtils.exportToXml(ids, advDao, "e:\\export.xml");
+            } catch (Exception e) {
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                e.printStackTrace();
+            }
+        }
+        return "redirect:/"+indexMaping;
     }
 }

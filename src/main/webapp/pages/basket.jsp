@@ -2,6 +2,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
     <head>
+        <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
         <title>Basket</title>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
@@ -13,10 +14,11 @@
     <h1 style="background-color: #00FFFF; font-family: 'Comic Sans MS'; color: black; padding: 10px; margin: 0px;" align="center">Basket</h1>
         <form class="form-inline" role="form" action="/search" method="post">
             <input type="text" class="form-control" name="pattern" placeholder="Short desc">
-            <input type="text" hidden name="location" value="basket">
+            <input type="hidden"  name="location" value="basket">
             <input type="submit" class="btn btn-default" value="Search">
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         </form>
-        <form id="check" role="form" action="/doAction" method="post">
+        <form id="check" role="form" action="/administration/doAction" method="post">
         <table class="table table-striped">
             <thead>
             <tr>
@@ -43,16 +45,23 @@
                 </tr>
             </c:forEach>
         </table>
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         </form>
-        <form style="float:left" class="form-inline" role="form" action="/" , method="post">
-            <button type="submit" class="btn btn-default">Back to adv list</button>
+        <form style="float:left" class="form-inline" role="form" action="/index" , method="post">
+            <button type="submit" class="btn btn-default"><img width="40" height="40" src="images/back.png">
+                Back to adv list</button>
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         </form>
-        <button style="float:left" class="btn btn-default" form="check" type="submit" name="action" value="restore">Restore selected</button>
-        <form style="float:left" class="form-inline" role="form" action="/restore_all" method="post">
-            <button type="submit" class="btn btn-default">Restore all</button>
+        <button style="float:left" class="btn btn-default" form="check" type="submit" name="action" value="restore">
+            <img width="40" height="40" src="images/restore.png">Restore selected</button>
+        <form style="float:left" class="form-inline" role="form" action="/administration/restore_all" method="post">
+            <button type="submit" class="btn btn-default"><img width="40" height="40" src="images/restoreAll.png">Restore all</button>
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         </form>
-        <form style="float:left" class="form-inline" role="form" action="/clean_basket" method="post">
-            <button type="submit" class="btn btn-default">Clear basket</button>
+        <form style="float:left" class="form-inline" role="form" action="/administration/clean_basket" method="post">
+            <button type="submit" class="btn btn-default"><img width="40" height="40" src="images/clear.png">
+                Clear basket</button>
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         </form>
     </body>
 </html>
