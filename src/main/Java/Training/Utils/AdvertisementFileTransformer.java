@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * Created by Администратор on 16.05.2017.
  */
-public class XmlUtils {
+public class AdvertisementFileTransformer {
     public static void exportToXml(long [] ids, AdvDAO advDAO, String dest) {
         Container container = new Container();
         for (long id :ids){

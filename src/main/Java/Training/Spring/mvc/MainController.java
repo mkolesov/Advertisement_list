@@ -1,10 +1,11 @@
 package Training.Spring.mvc;
 
-import Training.App_constants;
+import Training.Constants.App_constants;
 import Training.Dao.AdvDAO;
 import Training.Entities.Advertisement;
 import Training.Entities.Photo;
-import Training.Utils.XmlUtils;
+import Training.Utils.AdvertisementFileTransformer;
+import Training.Utils.UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -26,8 +26,7 @@ import java.util.List;
 @Controller
 public class MainController implements App_constants {
 
-    private String indexPage = "index";
-    private final String indexMaping = "index";
+    private final String indexPage = "index";
 
     @Autowired
     private AdvDAO advDao;
@@ -37,8 +36,9 @@ public class MainController implements App_constants {
         return "redirect:/index";
     }
 
-    @RequestMapping(indexMaping)
+    @RequestMapping(indexPage)
     public String index(Model model) {
+        model.addAllAttributes(UserInfo.getData());
         model.addAttribute("advs",advDao.list(NOT_IN_BASKET));
         model.addAttribute("inBasketCount", advDao.list(IN_BASKET).size());
         return indexPage;
@@ -50,11 +50,15 @@ public class MainController implements App_constants {
     }
 
     @RequestMapping(value = "/search", method = RequestMethod.POST)
-    public ModelAndView search(@RequestParam(value = "pattern") String pattern, @RequestParam(value = "location") String location){
+    public String search(@RequestParam(value = "pattern") String pattern, @RequestParam(value = "location") String location, Model model){
+        model.addAttribute("inSearch", "y");
         if (location.equals("basket")){
-            return new ModelAndView("basket", "advs", advDao.list(IN_BASKET, pattern));
+            model.addAttribute("advs", advDao.list(IN_BASKET, pattern));
+            return "basket";
         }
-        return new ModelAndView(indexPage, "advs", advDao.list(NOT_IN_BASKET, pattern));
+        model.addAttribute("advs", advDao.list(NOT_IN_BASKET, pattern));
+        model.addAllAttributes(UserInfo.getData());
+        return indexPage;
     }
 
     @RequestMapping("/administration/clean_basket")
@@ -99,11 +103,11 @@ public class MainController implements App_constants {
             Advertisement advertisement = new Advertisement(name, shortDesc, longDesc, phone, price,
                     photo.isEmpty()?null: new Photo(photo.getOriginalFilename(), photo.getBytes()));
             advDao.add(advertisement);
-            return "redirect:/"+indexMaping;
+            return "redirect:/"+indexPage;
         } catch (IOException e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             e.printStackTrace();
-            return "redirect:/"+indexMaping;
+            return "redirect:/"+indexPage;
         }
     }
 
@@ -126,7 +130,7 @@ public class MainController implements App_constants {
                 return "redirect:/administration/basket";
             }
         }
-        return "redirect:/"+indexMaping;
+        return "redirect:/"+indexPage;
     }
 
     @RequestMapping(value = "/administration/basket")
@@ -140,25 +144,30 @@ public class MainController implements App_constants {
         try {
             InputStream file = importFile.getInputStream();
             if (file.available()>0) {
-                XmlUtils.importFromXml(file, advDao);
+                AdvertisementFileTransformer.importFromXml(file, advDao);
             }
         } catch (IOException e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             e.printStackTrace();
         }
-        return "redirect:/"+indexMaping;
+        return "redirect:/"+indexPage;
     }
 
     @RequestMapping(value = "/auth/export", method = RequestMethod.POST)
     public String export(@RequestParam(value = "id", required = false) long[] ids, HttpServletResponse response){
         if(ids != null) {
             try {
-                    XmlUtils.exportToXml(ids, advDao, "e:\\export.xml");
+                    AdvertisementFileTransformer.exportToXml(ids, advDao, "e:\\export.xml");
             } catch (Exception e) {
                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 e.printStackTrace();
             }
         }
-        return "redirect:/"+indexMaping;
+        return "redirect:/"+indexPage;
+    }
+
+    @RequestMapping(value = "/login")
+    public String login(){
+        return "login_page";
     }
 }

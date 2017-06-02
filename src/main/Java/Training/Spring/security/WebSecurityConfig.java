@@ -1,4 +1,4 @@
-/*package Training.Spring.security;
+package Training.Spring.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -8,9 +8,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.servlet.configuration.EnableWebMvcSecurity;
 
-*//**
+/**
  * Created by Администратор on 25.05.2017.
- *//*
+ */
 
 @Configuration
 @EnableWebMvcSecurity
@@ -25,12 +25,23 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests().antMatchers("/auth*//**").hasAnyRole("ADMIN", "USER")
-                                .antMatchers("/administration*//**").hasRole("ADMIN")
+        http.authorizeRequests().antMatchers("/auth/**").hasAnyRole("ADMIN", "USER")
+                                .antMatchers("/administration/**").hasRole("ADMIN")
                                 .antMatchers("/index").permitAll()
                                 .and()
-            .formLogin().loginPage("/login").permitAll().and().httpBasic();
+            .formLogin().loginPage("/login")
+                .loginProcessingUrl("/j_spring_security_check")
+                .failureUrl("/login?error")
+                .usernameParameter("j_username")
+                .passwordParameter("j_password")
+                .permitAll().and()
+            .logout()
+                .permitAll()
+                .logoutUrl("/logout")
+                /*.logoutSuccessUrl("/login?logout")*/
+                .logoutSuccessUrl("/index")
+                .invalidateHttpSession(true);
 
 
     }
-}*/
+}

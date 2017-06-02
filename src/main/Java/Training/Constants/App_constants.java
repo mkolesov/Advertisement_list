@@ -1,4 +1,4 @@
-package Training;
+package Training.Constants;
 
 /**
  * Created by Администратор on 12.05.2017.

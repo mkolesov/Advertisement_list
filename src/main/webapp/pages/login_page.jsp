@@ -30,7 +30,7 @@
             <font color="red"> Не правильный логин или пароль. Попробуйте
                 заново.</font>
         </c:if>
-        <form name="f" action="<c:url value='basket.jsp'/>"
+        <form name="f" action="/j_spring_security_check"
               method="POST" style="background: white;">
             <table>
                 <tr>
@@ -51,6 +51,7 @@
                     </td>
                 </tr>
             </table>
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         </form>
     </div>
 </div>

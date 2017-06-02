@@ -12,12 +12,16 @@
     <body>
     <h1 style="background-color: #3F3F3F; font-family: 'Comic Sans MS'; color: white; padding: 10px; margin: 0px;" align="center">Advertisement list</h1>
     <h1 style="background-color: #00FFFF; font-family: 'Comic Sans MS'; color: black; padding: 10px; margin: 0px;" align="center">Basket</h1>
-        <form class="form-inline" role="form" action="/search" method="post">
-            <input type="text" class="form-control" name="pattern" placeholder="Short desc">
-            <input type="hidden"  name="location" value="basket">
-            <input type="submit" class="btn btn-default" value="Search">
-            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-        </form>
+    <form class="form-inline" role="form" action="/search" method="post">
+        <input type="text" class="form-control" name="pattern" placeholder="Short desc">
+        <input type="submit" class="btn btn-default" value="Search">
+        <c:if test="${inSearch eq 'y'}">
+            <button formaction="/administration/basket" class="btn btn-default">Cancel filtering</button>
+        </c:if>
+        <input type="hidden"  name="location" value="basket">
+        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+    </form>
+
         <form id="check" role="form" action="/administration/doAction" method="post">
         <table class="table table-striped">
             <thead>
@@ -45,8 +49,15 @@
                 </tr>
             </c:forEach>
         </table>
+            <c:if test="${empty advs and inSearch eq 'y'}">
+                <h5 align="center" style="font-size:170%">No such result</h5>
+            </c:if>
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         </form>
+
+
+    <%--GO TO CENTER --%>
+    <div align="center">
         <form style="float:left" class="form-inline" role="form" action="/index" , method="post">
             <button type="submit" class="btn btn-default"><img width="40" height="40" src="images/back.png">
                 Back to adv list</button>
@@ -63,5 +74,6 @@
                 Clear basket</button>
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         </form>
+    </div>
     </body>
 </html>
