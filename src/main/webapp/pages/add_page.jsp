@@ -10,9 +10,9 @@
     <body>
     <h1 style="background-color: #3F3F3F; font-family: 'Comic Sans MS'; color: white; padding: 10px; margin: 0px;" align="center">Advertisement list</h1>
     <h1 style="background-color: #ADFF2F; font-family: 'Comic Sans MS'; color: white; padding: 10px; margin: 0px;" align="center">Add new advertisement</h1>
-    <%--<div style="width: 1200px" align="center">--%>
-        <form id="new_adv" role="form" enctype="multipart/form-data" class="form-vertical" action="/auth/add" method="post">
-            <table align="center">
+    <form id="new_adv" role="form" enctype="multipart/form-data" class="form-vertical" action="/auth/add" method="post">
+        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+        <table align="center">
                 <tr>
                     <td>
                         <div style="width: 500px">
@@ -27,45 +27,28 @@
                 <tr align="center">
                     <td>
                         <div style="outline: 1px solid #ccc">
-                            Photo: <input type="file" name="photo" placeholder="TEST">
+                            Photo: <input type="file" name="photo">
                         </div>
 
                     </td>
                 </tr>
                 <tr align="center">
-                    <td>
-                        <button style="height: 56px; width: 240px; margin-top: 10px" type="submit "
+                    <td><c:out value="${_csrf.token}"/>
+                        <button form="new_adv" style="height: 56px; width: 240px; margin-top: 10px" type="submit "
                                 class="btn btn-default"><img width="40" height="40" src="images/add.png">
                             Add Advertisement</button>
                     </td>
                 </tr>
             </table>
-
-
-                    <%--<tr>
-                        <td>
-                            Photo: <input type="file" name="photo" placeholder="TEST">
-
-                        </td>
-                        <td>
-                            <input class="btn btn-primary" type="submit" value="Add Advertisement">
-                        </td>
-                    </tr>--%>
-
-                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-
-        </form> <%--</div>--%>
+        </form>
         <div align="center" style="margin-top: 50px">
         <form enctype="multipart/form-data" role="form" action="/auth/import" method="post">
             <button style="height: 56px; width: 290px;" type="submit" class="btn btn-default" align="center">
                 Import from XML<input type="file" name="import" hidden></button>
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         </form>
-            <form role="form" action="/index" method="post">
-                <button type="submit" class="btn btn-default"><img width="25" height="25" src="images/back.png">
-                    Back to adv list</button>
-                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-            </form>
+            <a href="/index" class="btn btn-default"><img width="40" height="40" src="images/back.png">
+                Back to adv list</a>
         </div>
     </body>
 </html>

@@ -10,21 +10,19 @@
     </head>
 
     <body>
-        <h1 style="background-color: #3F3F3F; font-family: 'Comic Sans MS'; color: white; padding: 10px; margin: 0px;" align="center">Advertisement list</h1>
+    <h1 style="background-color: #3F3F3F; font-family: 'Comic Sans MS'; color: white; padding: 10px; margin: 0px;" align="center">Advertisement list</h1>
 
         <!--Guest -->
         <c:if test="${role eq 'ROLE_ANONYMOUS'}">
-            <div style="background-color: #DC143C; height: 35px" align="right">
+            <div style="background-color: #DC143C; height: 34px" align="right">
                 <table style="border-spacing: 10px 0px; border-collapse: separate">
                     <tr>
-                        <td><p style="font-size: 20px">You are logged as
-                            <span><b>Guest</b></span></p>
+                        <td>
+                            <div style="font-size: 20px;">You are logged as
+                            <span><b>Guest</b></span></div>
                         </td>
                         <td>
-                            <form role="form" action="/login" method="post">
-                                <input style="background-color: #FFC0CB" type="submit" class="btn btn-default" value="Log in">
-                                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                            </form>
+                            <a style="background-color: #FFC0CB" href="/login" class="btn btn-default">Log in</a>
                         </td>
                     </tr>
                 </table>
@@ -33,11 +31,13 @@
 
         <!--User -->
         <c:if test="${role eq 'ROLE_USER'}">
-            <div style="background-color: #ADFF2F; height: 35px" align="right">
+            <div style="background-color: #ADFF2F; height: 34px" align="right">
                 <table style="border-spacing: 10px 0px; border-collapse: separate">
                     <tr>
-                        <td><p style="font-size: 20px">You are logged as
-                            <span><b>${userName}</b></span></p>
+                        <td valign="top">
+                            <div style="font-size: 20px; margin-top: 6px">You are logged as
+                                <span><b>${userName}</b></span>
+                            </div>
                         </td>
                         <td>
                             <form role="form" action="/logout" method="post">
@@ -52,16 +52,18 @@
 
         <%--Admin--%>
         <c:if test="${role eq 'ROLE_ADMIN'}">
-            <div style="background-color: #00FFFF; height: 35px" align="right">
+            <div style="background-color: #00FFFF; height: 34px" align="right">
                 <table style="border-spacing: 10px 0px; border-collapse: separate">
                     <tr>
-                        <td><p style="font-size: 20px">You are logged as
-                            <span><b>${userName}</b></span></p>
+                        <td valign="top">
+                            <div style="font-size: 20px; margin-top: 6px">You are logged as
+                                <span><b>${userName}</b></span>
+                            </div>
                         </td>
                         <td>
                             <form role="form" action="/logout" method="post">
-                                <input style="background-color: #40E0D0" type="submit" class="btn btn-default" value="Log out">
                                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                                <input style="background-color: #40E0D0;" type="submit" class="btn btn-default" value="Log out">
                             </form>
                         </td>
                     </tr>
@@ -73,8 +75,8 @@
         <form class="form-inline" role="form" action="/search" method="post">
             <input type="text" class="form-control" name="pattern" placeholder="Short desc">
             <input type="submit" class="btn btn-default" value="Search">
-            <c:if test="${inSearch eq 'y'}">
-                <button formaction="/index" class="btn btn-default">Cancel filtering</button>
+            <c:if test="${not empty inSearch}">
+                <a href="/index" class="btn btn-default">Cancel filtering</a>
             </c:if>
             <input type="hidden" name="location" value="">
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
@@ -105,8 +107,11 @@
                 </tr>
             </c:forEach>
         </table>
-            <c:if test="${empty advs}">
+            <c:if test="${not empty inSearch and empty advs}">
                 <h5 align="center" style="font-size:170%">No such result</h5>
+            </c:if>
+            <c:if test="${empty advs and empty inSearch}">
+                <h5 align="center" style="font-size:170%">No advertisements here</h5>
             </c:if>
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         </form>
@@ -114,14 +119,10 @@
         <%-- LOG IN TO GET FEATURES--%>
         <c:if test="${role eq 'ROLE_ANONYMOUS'}">
             <div style="height: 56px" align="center">
-                <h5 style="font-size:170%">
+                <div style="font-size:170%">
                     <b>Log in to unlock advanced actions</b>
-                </h5>
-                            <form role="form" action="/login" method="post">
-                                <button style="height: 56px; width: 220px"
-                                        type="submit" class="btn btn-default">Log in</button>
-                                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                            </form>
+                </div>
+                <a style="height: 56px; width: 220px;" href="/login" class="btn btn-default"><div style="margin-top: 12px">Log in</div></a>
             </div>
         </c:if>
 

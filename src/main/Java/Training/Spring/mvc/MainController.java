@@ -51,7 +51,7 @@ public class MainController implements App_constants {
 
     @RequestMapping(value = "/search", method = RequestMethod.POST)
     public String search(@RequestParam(value = "pattern") String pattern, @RequestParam(value = "location") String location, Model model){
-        model.addAttribute("inSearch", "y");
+        model.addAttribute("inSearch", "yes");
         if (location.equals("basket")){
             model.addAttribute("advs", advDao.list(IN_BASKET, pattern));
             return "basket";

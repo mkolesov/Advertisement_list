@@ -1,53 +1,59 @@
-<%@ page language="java" contentType="text/html; charset=utf-8"
-         pageEncoding="utf-8"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<%@ taglib prefix='c' uri='http://java.sun.com/jstl/core_rt'%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
+    <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
     <title>Форма Авторизации</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
     <style type="text/css">
-        body {
-            background: #63bad8 50% 0px repeat-x;
-            text-align: center;
-        }
-
         div.main {
             margin: 50px auto;
             padding: 0 0 0 0;
             width: 340px;
-            border-color: black;
+            border-color: #3F3F3F;
+            border-style: solid;
+            border-radius: 5px;
+            overflow: hidden;
         }
     </style>
 </head>
 <body>
+<h1 style="background-color: #3F3F3F; font-family: 'Comic Sans MS'; color: white; padding: 10px; margin: 0px;" align="center">Advertisement list</h1>
 <div class="main">
+
     <h1
-            style="background-color: #3F3F3F; color: white; padding: 10px; margin: 0px;">Авторизация</h1>
+            style="background-color: #3F3F3F; color: white; padding: 10px; margin: 0px;" align="center">Authorisation </h1>
     <div
             style="background: white; border: black; padding: 10px; margin: 0px;"
             align="center" dir="ltr">
-        <c:if test="${not empty param.login_error}">
-            <font color="red"> Не правильный логин или пароль. Попробуйте
-                заново.</font>
+        <c:if test="${param.containsKey('error')}">
+            <div style="color: #DC143C">Invalid login or password, try again.</div>
         </c:if>
         <form name="f" action="/j_spring_security_check"
               method="POST" style="background: white;">
-            <table>
+            <table width="274px">
                 <tr>
-                    <td style="font-style: oblique">Пользователь:</td>
-                    <td><input type='text' name='j_username'
-                               value='<c:if test="${not empty param.login_error}"><c:out value="${SPRING_SECURITY_LAST_USERNAME}"/></c:if>' />
+                    <td>Login: </td>
+                    <td><input type='text' name='j_username'/>
                     </td>
                 </tr>
                 <tr>
-                    <td style="font-style: oblique">Пароль:</td>
+                    <td>Password: </td>
                     <td><input type='password' name='j_password'>
                     </td>
                 </tr>
                 <tr align="center">
-                    <td colspan='2' align="center"><input name="submit"
-                                                          value="Войти" type="submit"> <input name="reset"
-                                                                                              value="Очистить" type="reset">
+                    <td colspan='2' align="center">
+                            <input style="margin-top: 5px" class="btn btn-default" name="submit" value="Submit" type="submit">
+                            <input style="margin-top: 5px" name="reset" class="btn btn-default" value="Reset" type="reset">
+                    </td>
+                </tr>
+                <tr align="center">
+                    <td colspan='2' align="center">
+                        <a style="margin-top: 5px"  href="/index" class="btn btn-default"><img width="25" height="25" src="images/back.png">
+                            Back to adv list</a>
                     </td>
                 </tr>
             </table>

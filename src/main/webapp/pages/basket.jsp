@@ -15,8 +15,8 @@
     <form class="form-inline" role="form" action="/search" method="post">
         <input type="text" class="form-control" name="pattern" placeholder="Short desc">
         <input type="submit" class="btn btn-default" value="Search">
-        <c:if test="${inSearch eq 'y'}">
-            <button formaction="/administration/basket" class="btn btn-default">Cancel filtering</button>
+        <c:if test="${not empty inSearch}">
+            <a href="/administration/basket" class="btn btn-default">Cancel filtering</a>
         </c:if>
         <input type="hidden"  name="location" value="basket">
         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
@@ -49,31 +49,30 @@
                 </tr>
             </c:forEach>
         </table>
-            <c:if test="${empty advs and inSearch eq 'y'}">
+            <c:if test="${not empty inSearch and empty advs}">
                 <h5 align="center" style="font-size:170%">No such result</h5>
+            </c:if>
+            <c:if test="${empty advs and empty inSearch}">
+                <h5 align="center" style="font-size:170%">No advertisements here</h5>
             </c:if>
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         </form>
 
-
-    <%--GO TO CENTER --%>
-    <div align="center">
-        <form style="float:left" class="form-inline" role="form" action="/index" , method="post">
-            <button type="submit" class="btn btn-default"><img width="40" height="40" src="images/back.png">
-                Back to adv list</button>
-            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-        </form>
-        <button style="float:left" class="btn btn-default" form="check" type="submit" name="action" value="restore">
-            <img width="40" height="40" src="images/restore.png">Restore selected</button>
-        <form style="float:left" class="form-inline" role="form" action="/administration/restore_all" method="post">
-            <button type="submit" class="btn btn-default"><img width="40" height="40" src="images/restoreAll.png">Restore all</button>
-            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-        </form>
-        <form style="float:left" class="form-inline" role="form" action="/administration/clean_basket" method="post">
-            <button type="submit" class="btn btn-default"><img width="40" height="40" src="images/clear.png">
-                Clear basket</button>
-            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-        </form>
-    </div>
+    <table align="center">
+        <tr>
+            <td>
+                <form role="form" method="post">
+                    <a href="/index" class="btn btn-default"><img width="40" height="40" src="images/back.png">
+                        Back to adv list</a>
+                <button class="btn btn-default" form="check" type="submit" name="action" value="restore">
+                    <img width="40" height="40" src="images/restore.png">Restore selected</button>
+                    <button type="submit" formaction="/administration/restore_all" class="btn btn-default"><img width="40" height="40" src="images/restoreAll.png">Restore all</button>
+                    <button formaction="/administration/restore_all" type="submit" class="btn btn-default"><img width="40" height="40" src="images/clear.png">
+                        Clear basket</button>
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                </form>
+            </td>
+        </tr>
+    </table>
     </body>
 </html>
