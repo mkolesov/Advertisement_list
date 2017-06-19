@@ -93,8 +93,10 @@ public class AppConfig extends WebMvcConfigurerAdapter{
     }
 
     @Bean
-    public CommonsMultipartResolver multipartResolver(){
-        return new CommonsMultipartResolver();
+    public CommonsMultipartResolver filterMultipartResolver(){
+        CommonsMultipartResolver cmr =  new CommonsMultipartResolver();
+        cmr.setDefaultEncoding("utf-8");
+        return cmr;
     }
 
     @Bean

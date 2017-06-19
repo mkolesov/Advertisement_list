@@ -4,8 +4,12 @@ import Training.Spring.config.AppConfig;
 import Training.Spring.security.WebSecurityConfig;
 import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
+import org.springframework.web.filter.CharacterEncodingFilter;
+import org.springframework.web.filter.DelegatingFilterProxy;
+import org.springframework.web.multipart.support.MultipartFilter;
 import org.springframework.web.servlet.DispatcherServlet;
 
+import javax.servlet.FilterRegistration;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRegistration;
@@ -18,7 +22,13 @@ public class WebInitializer implements WebApplicationInitializer {
         AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
         context.register(AppConfig.class);
         context.register(WebSecurityConfig.class);
-        //servletContext.addListener(new ContextLoaderListener(context));
+        FilterRegistration.Dynamic encodingFilter = servletContext.addFilter("characterEncodingFilter", new CharacterEncodingFilter());
+        encodingFilter.setInitParameter("encoding", "UTF-8");
+        encodingFilter.setInitParameter("forceEncoding", "true");
+        encodingFilter.addMappingForUrlPatterns(null, false, "/*");
+        servletContext.addFilter("springMultipartFilter", new MultipartFilter()).addMappingForUrlPatterns(null, false, "/*");
+        servletContext.addFilter("springSecurityFilterChain", new DelegatingFilterProxy("springSecurityFilterChain"))
+                .addMappingForUrlPatterns(null, false, "/*");
         context.setServletContext(servletContext);
         ServletRegistration.Dynamic servlet = servletContext.addServlet("dispatcher", new DispatcherServlet(context));
         servlet.addMapping("/");

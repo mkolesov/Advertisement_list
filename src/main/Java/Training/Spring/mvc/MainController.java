@@ -4,8 +4,8 @@ import Training.Constants.App_constants;
 import Training.Dao.AdvDAO;
 import Training.Entities.Advertisement;
 import Training.Entities.Photo;
-import Training.Utils.AdvertisementFileTransformer;
 import Training.Utils.UserInfo;
+import Training.Utils.XML.AdvertisementFileTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,6 +19,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+
+import static Training.Utils.StringUtils.ValidateAddData;
+import static Training.Utils.XML.AdvertisementFileTransformer.sendXml;
 
 /**
  * Created by Администратор on 25.04.2017.
@@ -79,15 +82,17 @@ public class MainController implements App_constants {
         return "redirect:/administration/basket";
     }
 
-    @RequestMapping("/image/{file_id}")
+    @RequestMapping(value = {"/image/{file_id}", "/image"})
     public void getFile(HttpServletResponse response,
                         @PathVariable("file_id") long fileId){
-        try{
-            byte[] content = advDao.getPhoto(fileId);
-            response.setContentType("image/png");
-            response.getOutputStream().write(content);
-        } catch (IOException e){
-            e.printStackTrace();
+        if (fileId!=0){
+            try{
+                byte[] content = advDao.getPhoto(fileId);
+                response.setContentType("image/png");
+                response.getOutputStream().write(content);
+            } catch (IOException e){
+                e.printStackTrace();
+            }
         }
     }
 
@@ -96,11 +101,16 @@ public class MainController implements App_constants {
                                @RequestParam(value = "shortDesc") String shortDesc,
                                @RequestParam(value = "longDesc", required = false) String longDesc,
                                @RequestParam(value = "phone") String phone,
-                               @RequestParam(value = "price") double price,
+                               @RequestParam(value = "price") String price,
                                @RequestParam(value = "photo") MultipartFile photo,
-                               HttpServletResponse response){
+                               HttpServletResponse response, Model model){
+        String validationError = ValidateAddData(new String[]{name, shortDesc, longDesc, phone}, photo.getOriginalFilename(), price);
+        if(validationError!=null){
+            model.addAttribute("error", validationError);
+            return "add_page";
+        }
         try {
-            Advertisement advertisement = new Advertisement(name, shortDesc, longDesc, phone, price,
+            Advertisement advertisement = new Advertisement(name, shortDesc, longDesc, phone, Double.valueOf(price),
                     photo.isEmpty()?null: new Photo(photo.getOriginalFilename(), photo.getBytes()));
             advDao.add(advertisement);
             return "redirect:/"+indexPage;
@@ -154,20 +164,25 @@ public class MainController implements App_constants {
     }
 
     @RequestMapping(value = "/auth/export", method = RequestMethod.POST)
-    public String export(@RequestParam(value = "id", required = false) long[] ids, HttpServletResponse response){
+    public void export(@RequestParam(value = "id", required = false) long[] ids, HttpServletResponse response){
         if(ids != null) {
             try {
-                    AdvertisementFileTransformer.exportToXml(ids, advDao, "e:\\export.xml");
+                sendXml(ids, advDao, response);
             } catch (Exception e) {
                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 e.printStackTrace();
             }
         }
-        return "redirect:/"+indexPage;
     }
 
     @RequestMapping(value = "/login")
+
     public String login(){
         return "login_page";
+    }
+
+    @RequestMapping(value = "/access_denied")
+    public String error403(){
+        return "error403";
     }
 }

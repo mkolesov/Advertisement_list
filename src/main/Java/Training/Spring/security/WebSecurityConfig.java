@@ -39,8 +39,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/index")
-                .invalidateHttpSession(true);
+                .invalidateHttpSession(true).and()
+            .exceptionHandling().accessDeniedPage("/access_denied");
     }
-
-
 }
