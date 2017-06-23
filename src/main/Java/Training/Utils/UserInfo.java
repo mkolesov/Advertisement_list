@@ -1,26 +1,27 @@
 package Training.Utils;
 
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Администратор on 02.06.2017.
  */
 public class UserInfo {
 
-    public static Map<String, String> getData(){
-
+    public static List<String> getCurrentUserRoles(){
+        List<String> res = new ArrayList<>();
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Map<String, String> userData = new HashMap<String, String>();
-        userData.put("role", authentication.getAuthorities().iterator().next().getAuthority());
+        authentication.getAuthorities().forEach( authority->{
+            res.add(authority.getAuthority());
+        });
+        return res;
+    }
 
-        if (!(authentication instanceof AnonymousAuthenticationToken)) {
-            userData.put("userName", authentication.getName());
-        }
-        return userData;
+    public static String getCurrentUserName(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return  authentication.getName();
     }
 }

@@ -41,7 +41,8 @@ public class MainController implements App_constants {
 
     @RequestMapping(indexPage)
     public String index(Model model) {
-        model.addAllAttributes(UserInfo.getData());
+        model.addAttribute("roles", UserInfo.getCurrentUserRoles());
+        model.addAttribute("userName", UserInfo.getCurrentUserName());
         model.addAttribute("advs",advDao.list(NOT_IN_BASKET));
         model.addAttribute("inBasketCount", advDao.list(IN_BASKET).size());
         return indexPage;
@@ -60,7 +61,7 @@ public class MainController implements App_constants {
             return "basket";
         }
         model.addAttribute("advs", advDao.list(NOT_IN_BASKET, pattern));
-        model.addAllAttributes(UserInfo.getData());
+        model.addAllAttributes(UserInfo.getCurrentUserRoles());
         return indexPage;
     }
 

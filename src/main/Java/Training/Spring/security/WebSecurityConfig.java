@@ -1,12 +1,15 @@
 package Training.Spring.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.servlet.configuration.EnableWebMvcSecurity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 /**
  * Created by Администратор on 25.05.2017.
@@ -17,15 +20,21 @@ import org.springframework.security.config.annotation.web.servlet.configuration.
 @EnableGlobalMethodSecurity(securedEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
+    @Bean
+    CustomUserDetailsService customUserDetailsService(){
+        return new CustomUserDetailsService();
+    }
+
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication().withUser("user").password("user").roles("USER");
-        auth.inMemoryAuthentication().withUser("admin").password("admin").roles("ADMIN");
+        auth.userDetailsService(customUserDetailsService()).passwordEncoder(encoder());
+//        auth.inMemoryAuthentication().withUser("user").password("user").roles("USER");
+//        auth.inMemoryAuthentication().withUser("admin2").password("123").roles("ADMIN");
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests().antMatchers("/auth/**").hasAnyRole("ADMIN", "USER")
+        http.authorizeRequests().antMatchers("/auth/**").hasRole("USER")
                                 .antMatchers("/administration/**").hasRole("ADMIN")
                                 .antMatchers("/index").permitAll()
                                 .and()
@@ -41,5 +50,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutSuccessUrl("/index")
                 .invalidateHttpSession(true).and()
             .exceptionHandling().accessDeniedPage("/access_denied");
+    }
+
+    @Bean
+    public PasswordEncoder encoder() {
+        return new BCryptPasswordEncoder(9);
     }
 }

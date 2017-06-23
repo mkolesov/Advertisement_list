@@ -1,7 +1,9 @@
 package Training.Spring.config;
 
 import Training.Dao.AdvDAO;
-import Training.Dao.Impl.AdvDaoImpl;
+import Training.Dao.Impl.AdvDaoJdbcImpl;
+import Training.Dao.Impl.UserDaoJdbcImpl;
+import Training.Dao.UserDao;
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 import org.hibernate.jpa.HibernatePersistenceProvider;
 import org.springframework.context.annotation.Bean;
@@ -89,7 +91,12 @@ public class AppConfig extends WebMvcConfigurerAdapter{
 
     @Bean
     public AdvDAO advDAO(){
-        return new AdvDaoImpl();
+        return new AdvDaoJdbcImpl();
+    }
+
+    @Bean
+    public UserDao userDao(){
+        return new UserDaoJdbcImpl();
     }
 
     @Bean
@@ -116,6 +123,4 @@ public class AppConfig extends WebMvcConfigurerAdapter{
         registry.addResourceHandler("/administration/images/**").addResourceLocations("/resources/images/");
         registry.addResourceHandler("/auth/images/**").addResourceLocations("/resources/images/");
     }
-
-
 }

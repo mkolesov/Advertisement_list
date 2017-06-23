@@ -14,7 +14,7 @@ import java.util.List;
  * Created by Администратор on 25.04.2017.
  */
 @Transactional
-public class AdvDaoImpl implements AdvDAO{
+public class AdvDaoJdbcImpl implements AdvDAO{
 
     @PersistenceContext
     private EntityManager entityManager;

@@ -13,7 +13,7 @@
         <h1 style="background-color: #3F3F3F; font-family: 'Comic Sans MS'; color: white; padding: 10px; margin: 0px;" align="center">Advertisement list</h1>
 
         <!--Guest -->
-        <c:if test="${role eq 'ROLE_ANONYMOUS'}">
+        <c:if test="${roles.contains('ROLE_ANONYMOUS')}">
             <div style="background-color: #DC143C; height: 34px" align="right">
                 <table style="border-spacing: 10px 0px; border-collapse: separate">
                     <tr>
@@ -30,7 +30,7 @@
         </c:if>
 
         <!--User -->
-        <c:if test="${role eq 'ROLE_USER'}">
+        <c:if test="${roles.contains('ROLE_USER') and !roles.contains('ROLE_ADMIN')}">
             <div style="background-color: #ADFF2F; height: 34px" align="right">
                 <table style="border-spacing: 10px 0px; border-collapse: separate">
                     <tr>
@@ -51,7 +51,7 @@
         </c:if>
 
         <%--Admin--%>
-        <c:if test="${role eq 'ROLE_ADMIN'}">
+        <c:if test="${roles.contains('ROLE_ADMIN')}">
             <div style="background-color: #00FFFF; height: 34px" align="right">
                 <table style="border-spacing: 10px 0px; border-collapse: separate">
                     <tr>
@@ -125,21 +125,21 @@
         </form>
 
         <%--FAST ACCESS FOR TESTING--%>
-        <c:if test="${role eq 'ROLE_ANONYMOUS'}">
+        <c:if test="${roles.contains('ROLE_ANONYMOUS')}">
         <table align="center">
             <tr>
                 <td>
                     <form name="user" action="/j_spring_security_check" method="POST">
-                        <input type='text' hidden name='j_username' value="user"/>
-                        <input type='password' hidden name='j_password' value="user">
+                        <input type='text' hidden name='j_username' value="user1"/>
+                        <input type='password' hidden name='j_password' value="1">
                         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                        <input style="background-color: #98FB98" type="submit" class="btn btn-default" value="User">
+                        <input style="background-color: #98FB98" type="submit" class="btn btn-default" value="User1">
                     </form>
                 </td>
                 <td>
                     <form name="admin" action="/j_spring_security_check" method="POST">
                         <input type='text' hidden name='j_username' value="admin"/>
-                        <input type='password' hidden name='j_password' value="admin">
+                        <input type='password' hidden name='j_password' value="123">
                         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                         <input style="background-color: #40E0D0" type="submit" class="btn btn-default" value="Admin">
                     </form>
@@ -150,7 +150,7 @@
         <%--FAST ACCESS FOR TESTING--%>
 
         <%-- LOG IN TO GET FEATURES--%>
-        <%--<c:if test="${role eq 'ROLE_ANONYMOUS'}">
+        <%--<c:if test="${roles.contains('ROLE_ANONYMOUS')}">
             <div style="height: 56px" align="center">
                 <div style="font-size:170%">
                     <b>Log in to unlock advanced actions</b>
@@ -161,7 +161,7 @@
 
         <div>
         <!--User -->
-            <c:if test="${role eq 'ROLE_USER' or role eq 'ROLE_ADMIN'}">
+            <c:if test="${roles.contains('ROLE_USER')}">
                 <div style="background-color: #ADFF2F; height: 56px">
                     <table align="center">
                         <tr valign="top">
@@ -184,7 +184,7 @@
             </c:if>
 
             <!--Admin -->
-            <c:if test="${role eq 'ROLE_ADMIN' }">
+            <c:if test="${roles.contains('ROLE_ADMIN')}">
                 <div style="background-color: #00FFFF; height: 56px">
                     <table align="center">
                         <tr valign="top">
