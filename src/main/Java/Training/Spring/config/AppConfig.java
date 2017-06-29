@@ -120,7 +120,8 @@ public class AppConfig extends WebMvcConfigurerAdapter{
     public void addResourceHandlers( final ResourceHandlerRegistry registry ) {
         registry.addResourceHandler("/favicon.ico").addResourceLocations("/resources/images/");
         registry.addResourceHandler("/images/**").addResourceLocations("/resources/images/");
-        registry.addResourceHandler("/administration/images/**").addResourceLocations("/resources/images/");
-        registry.addResourceHandler("/auth/images/**").addResourceLocations("/resources/images/");
+        registry.addResourceHandler("/css/**").addResourceLocations("/resources/css/");
+//        registry.addResourceHandler("/administration/images/**").addResourceLocations("/resources/images/");
+//        registry.addResourceHandler("/auth/images/**").addResourceLocations("/resources/images/");
     }
 }

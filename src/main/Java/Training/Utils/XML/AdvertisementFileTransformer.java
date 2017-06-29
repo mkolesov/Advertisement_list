@@ -1,8 +1,8 @@
 package Training.Utils.XML;
 
 import Training.Dao.AdvDAO;
-import Training.Entities.Advertisement;
-import Training.Entities.Container;
+import Training.Entities.Advertisement.Advertisement;
+import Training.Entities.Advertisement.Container;
 import org.springframework.util.FileCopyUtils;
 
 import javax.servlet.http.HttpServletResponse;
@@ -38,7 +38,13 @@ public class AdvertisementFileTransformer {
     public static void sendXml(long [] ids, AdvDAO advDAO, HttpServletResponse response) throws Exception{
         Container container = new Container();
         for (long id :ids){
-            container.add(advDAO.getById(id));
+            boolean flag = advDAO.inBasket(id);
+            if (!advDAO.inBasket(id)){
+                container.add(advDAO.getById(id));
+            }
+        }
+        if (container.getAdvertisements().isEmpty()){
+            return;
         }
         response.setContentType("application/download");
         response.addHeader("Content-Disposition","attachment;filename=export.xml");
@@ -50,6 +56,7 @@ public class AdvertisementFileTransformer {
         byte[] content = os.toByteArray();
         response.addHeader("Content-Length", String.valueOf(content.length));
         FileCopyUtils.copy(content, response.getOutputStream());
+        System.out.print("prank udalsya");
     }
 
     public static File exportToXml(long [] ids, AdvDAO advDAO) {

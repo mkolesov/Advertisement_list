@@ -2,6 +2,7 @@ package Training.Spring.mvc;
 
 import Training.Spring.config.AppConfig;
 import Training.Spring.security.WebSecurityConfig;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
@@ -29,6 +30,7 @@ public class WebInitializer implements WebApplicationInitializer {
         servletContext.addFilter("springMultipartFilter", new MultipartFilter()).addMappingForUrlPatterns(null, false, "/*");
         servletContext.addFilter("springSecurityFilterChain", new DelegatingFilterProxy("springSecurityFilterChain"))
                 .addMappingForUrlPatterns(null, false, "/*");
+        servletContext.addListener(HttpSessionEventPublisher.class);
         context.setServletContext(servletContext);
         ServletRegistration.Dynamic servlet = servletContext.addServlet("dispatcher", new DispatcherServlet(context));
         servlet.addMapping("/");

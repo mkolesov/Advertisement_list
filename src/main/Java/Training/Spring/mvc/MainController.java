@@ -2,8 +2,9 @@ package Training.Spring.mvc;
 
 import Training.Constants.App_constants;
 import Training.Dao.AdvDAO;
-import Training.Entities.Advertisement;
-import Training.Entities.Photo;
+import Training.Dao.UserDao;
+import Training.Entities.Advertisement.Advertisement;
+import Training.Entities.Advertisement.Photo;
 import Training.Utils.UserInfo;
 import Training.Utils.XML.AdvertisementFileTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,9 @@ public class MainController implements App_constants {
 
     @Autowired
     private AdvDAO advDao;
+
+    @Autowired
+    private UserDao userDao;
 
     @RequestMapping("/")
     public String root(){
@@ -105,6 +109,11 @@ public class MainController implements App_constants {
                                @RequestParam(value = "price") String price,
                                @RequestParam(value = "photo") MultipartFile photo,
                                HttpServletResponse response, Model model){
+
+        if (!userDao.isAdvAdditionAllowed()){
+            model.addAttribute("error", "ERROR");
+            return "add_page";
+        }
         String validationError = ValidateAddData(new String[]{name, shortDesc, longDesc, phone}, photo.getOriginalFilename(), price);
         if(validationError!=null){
             model.addAttribute("error", validationError);
@@ -165,15 +174,20 @@ public class MainController implements App_constants {
     }
 
     @RequestMapping(value = "/auth/export", method = RequestMethod.POST)
-    public void export(@RequestParam(value = "id", required = false) long[] ids, HttpServletResponse response){
+    public String export(@RequestParam(value = "id", required = false) long[] ids, HttpServletResponse response){
         if(ids != null) {
             try {
                 sendXml(ids, advDao, response);
+                /*
+                РЕАЛИЗОВАТЬ ОТПРАВКУ ОШИБКИ
+                О ОТСУТСТВИИ ФАЙЛА
+                */
             } catch (Exception e) {
                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 e.printStackTrace();
             }
         }
+        return "redirect:/"+indexPage;
     }
 
     @RequestMapping(value = "/login")

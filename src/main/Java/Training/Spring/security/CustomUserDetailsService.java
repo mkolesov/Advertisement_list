@@ -1,7 +1,7 @@
 package Training.Spring.security;
 
 import Training.Dao.UserDao;
-import Training.Entities.UserEntity;
+import Training.Entities.User.SmallUserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -25,8 +25,11 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
 
-        UserEntity user = userDao.findByUserName(userName);
-
+        SmallUserEntity user = userDao.findByUserName(userName);
+        //ExtendedUserEntity  u = userDao.getFullUserEntity(userName);
+        if ( user==null || !user.isEnabled()){
+            throw new UsernameNotFoundException("No such user in db");
+        }
         boolean enabled = true;
         boolean accountNonExpired = true;
         boolean credentialsNonExpired = true;

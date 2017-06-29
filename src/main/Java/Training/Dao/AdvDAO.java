@@ -1,6 +1,6 @@
 package Training.Dao;
 
-import Training.Entities.Advertisement;
+import Training.Entities.Advertisement.Advertisement;
 
 import java.util.List;
 
@@ -15,5 +15,5 @@ public interface AdvDAO {
     byte[] getPhoto(long id);
     void changeBasketStatus(boolean status, long id);
     Advertisement getById (long id);
-
+    boolean inBasket (long id);
 }

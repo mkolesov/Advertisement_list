@@ -1,4 +1,4 @@
-package Training.Entities;
+package Training.Entities.Advertisement;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlElement;

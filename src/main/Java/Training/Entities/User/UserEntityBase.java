@@ -1,14 +1,14 @@
-package Training.Entities;
+package Training.Entities.User;
 
 import javax.persistence.*;
 
 /**
- * Created by Администратор on 22.06.2017.
+ * Created by Администратор on 26.06.2017.
  */
 
-@Entity
-@Table(name="users")
-public class UserEntity {
+@MappedSuperclass
+public class UserEntityBase {
+
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -23,16 +23,6 @@ public class UserEntity {
     @Column(name = "enabled")
     private boolean enabled;
 
-    @Column(name = "adv_count")
-    private int advCount;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public String getUsername() {
         return username;
@@ -58,11 +48,15 @@ public class UserEntity {
         this.enabled = enabled;
     }
 
-    public int getAdvCount() {
-        return advCount;
+    public int getId() {
+        return id;
     }
 
-    public void setAdvCount(int advCount) {
-        this.advCount = advCount;
+
+    public void setId(int id) {
+        this.id = id;
     }
 }
+
+
+

@@ -49,7 +49,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/index")
                 .invalidateHttpSession(true).and()
-            .exceptionHandling().accessDeniedPage("/access_denied");
+            .exceptionHandling().accessDeniedPage("/access_denied").and()
+            .sessionManagement().maximumSessions(1).maxSessionsPreventsLogin(true);
     }
 
     @Bean

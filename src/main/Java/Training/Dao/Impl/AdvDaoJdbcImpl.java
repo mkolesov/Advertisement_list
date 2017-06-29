@@ -1,8 +1,8 @@
 package Training.Dao.Impl;
 
 import Training.Dao.AdvDAO;
-import Training.Entities.Advertisement;
-import Training.Entities.Photo;
+import Training.Entities.Advertisement.Advertisement;
+import Training.Entities.Advertisement.Photo;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
@@ -61,5 +61,12 @@ public class AdvDaoJdbcImpl implements AdvDAO{
         Query query = entityManager.createQuery("SELECT a FROM Advertisement a where a.id = :adv_id", Advertisement.class);
         query.setParameter("adv_id", id);
         return (Advertisement) query.getSingleResult();
+    }
+
+    @Override
+    public boolean inBasket(long id) {
+        Query query = entityManager.createNativeQuery("select in_basket from advs where id = :id");
+        query.setParameter("id", id);
+        return (boolean)query.getSingleResult();
     }
 }

@@ -7,9 +7,18 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="css/popup_window.css">
     </head>
 
     <body>
+    <%--<a href="#win1" class="button button-green">Открыть окно 1</a>--%>
+    <%--<a href="#x" class="overlay" id="win1"></a>--%>
+        <%--<div class="popup">--%>
+            <%--Здесь вы можете разместить любое содержание, текст с картинками или видео!--%>
+            <%--<a class="close"title="Закрыть" href="#close"></a>--%>
+        <%--</div>--%>
+
+
         <h1 style="background-color: #3F3F3F; font-family: 'Comic Sans MS'; color: white; padding: 10px; margin: 0px;" align="center">Advertisement list</h1>
 
         <!--Guest -->
