@@ -33,12 +33,18 @@ public class AdvDaoJdbcImpl implements AdvDAO{
     }
 
     public void add(Advertisement advertisement) {
-            entityManager.persist(advertisement);
+        entityManager.persist(advertisement);
+        Query query = entityManager.createNativeQuery("UPDATE users SET adv_count = adv_count+1 where user_name = :name");
+        query.setParameter("name", advertisement.getCreaterUserName());
+        query.executeUpdate();
     }
 
     public void delete(long id) {
-            Advertisement advertisement = entityManager.find(Advertisement.class, id);
-            entityManager.remove(advertisement);
+        Advertisement advertisement = entityManager.find(Advertisement.class, id);
+        Query query = entityManager.createNativeQuery("UPDATE users SET adv_count = adv_count-1 where user_name = :name");
+        query.setParameter("name", advertisement.getCreaterUserName());
+        query.executeUpdate();
+        entityManager.remove(advertisement);
     }
 
     public void changeBasketStatus(boolean status, long id) {

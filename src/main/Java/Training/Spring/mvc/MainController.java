@@ -7,7 +7,11 @@ import Training.Entities.Advertisement.Advertisement;
 import Training.Entities.Advertisement.Photo;
 import Training.Utils.UserInfo;
 import Training.Utils.XML.AdvertisementFileTransformer;
+import Training.dto.testDTO;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,10 +23,13 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Date;
 import java.util.List;
 
 import static Training.Utils.StringUtils.ValidateAddData;
 import static Training.Utils.XML.AdvertisementFileTransformer.sendXml;
+
+//import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Created by Администратор on 25.04.2017.
@@ -54,6 +61,9 @@ public class MainController implements App_constants {
 
     @RequestMapping(value = "/auth/add_page" ,method = RequestMethod.POST)
     public String addPage(){
+        if (!userDao.isAdvAdditionAllowed()){
+            return "error403";
+        }
         return "add_page";
     }
 
@@ -120,8 +130,10 @@ public class MainController implements App_constants {
             return "add_page";
         }
         try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             Advertisement advertisement = new Advertisement(name, shortDesc, longDesc, phone, Double.valueOf(price),
-                    photo.isEmpty()?null: new Photo(photo.getOriginalFilename(), photo.getBytes()));
+                    photo.isEmpty()?null: new Photo(photo.getOriginalFilename(), photo.getBytes()), false,
+                    new Date(System.currentTimeMillis()), authentication.getName());
             advDao.add(advertisement);
             return "redirect:/"+indexPage;
         } catch (IOException e) {
@@ -199,5 +211,21 @@ public class MainController implements App_constants {
     @RequestMapping(value = "/access_denied")
     public String error403(){
         return "error403";
+    }
+
+
+
+    @RequestMapping(value = "/REST")
+    public void testREST(HttpServletResponse response){
+        response.setContentType("application/json");
+        response.addHeader("Access-Control-Allow-Origin", "*");
+        ObjectMapper mapper = new ObjectMapper();
+        testDTO test = new testDTO("test1", "test2", 33);
+        try {
+            String res= mapper.writeValueAsString(test);
+            response.getOutputStream().write(res.getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

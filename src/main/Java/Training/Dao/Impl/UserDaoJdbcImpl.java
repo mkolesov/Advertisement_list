@@ -1,6 +1,7 @@
 package Training.Dao.Impl;
 
 import Training.Dao.UserDao;
+import Training.Entities.SecurityGroups.GroupEntity;
 import Training.Entities.User.ExtendedUserEntity;
 import Training.Entities.User.SmallUserEntity;
 import org.springframework.security.core.Authentication;
@@ -47,22 +48,20 @@ public class UserDaoJdbcImpl implements UserDao{
 
     @Override
     public boolean isAdvAdditionAllowed() {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        Query query = entityManager.createNativeQuery("select group_id from groups_members where user_name = :user_name");
-//        query.setParameter("user_name", authentication.getName());
-//        List<Integer> user_groups = query.getResultList();
-//        Set<Integer> groupsPremissions = new HashSet<>();
-//        user_groups.stream().forEach(group -> {
-//            Query getMaxAdvCount = entityManager.createNativeQuery("select adv_maximum from user_groups where id = " + Integer.toString(group));
-//            groupsPremissions.add((Integer)getMaxAdvCount.getSingleResult());
-//        });
-//        int maxAllowedAdvCount = Collections.max(groupsPremissions);
-//        Query countQuery = entityManager.createNativeQuery("select adv_count from users where user_name = :user_name");
-//        countQuery.setParameter("user_name", authentication.getName());
-//        int currentUserAdvCount = (int)countQuery.getSingleResult();
-//        if (currentUserAdvCount<maxAllowedAdvCount){
-//            return true;
-//        }
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Query getExtendedUserQuery = entityManager.createQuery("select u from ExtendedUserEntity u where u.username = :user_name", ExtendedUserEntity.class);
+        getExtendedUserQuery.setParameter("user_name", authentication.getName());
+        ExtendedUserEntity extendedUserEntity = (ExtendedUserEntity)getExtendedUserQuery.getSingleResult();
+        int maxAllowedAdvCount = 0;
+        for (GroupEntity group : extendedUserEntity.getGroups()) {
+            if (group.getAdvMaximumCount() > maxAllowedAdvCount) {
+                maxAllowedAdvCount = group.getAdvMaximumCount();
+            }
+        }
+        int currentUserAdvCount = extendedUserEntity.getAdvCount();
+        if (currentUserAdvCount<maxAllowedAdvCount){
+            return true;
+        }
         return false;
     }
 
